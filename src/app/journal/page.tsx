@@ -40,7 +40,7 @@ export default async function JournalListPage() {
                 <div className="flex items-center justify-between">
                   <span className="font-medium">{entry.title}</span>
                   <span className="text-xs text-foreground/50">
-                    {new Date(entry.createdAt).toLocaleString()}
+                    {new Date(entry.createdAt).toLocaleString("en-US", { timeZone: "UTC" })}
                     {entry.mood ? ` · ${entry.mood}` : ""}
                   </span>
                 </div>

@@ -165,7 +165,7 @@ export default function ProfilePage() {
           </li>
           <li>{profile.noteCount} quick notes</li>
           <li className="mt-1 text-xs text-foreground/50">
-            Account created {new Date(profile.createdAt).toLocaleDateString()}
+            Account created {new Date(profile.createdAt).toLocaleDateString("en-US", { timeZone: "UTC" })}
           </li>
         </ul>
         <p className="mt-3 text-xs text-foreground/50">

@@ -136,7 +136,7 @@ export default function EntryDetailPage() {
         </button>
       </div>
       <p className="mt-1 text-sm text-foreground/50">
-        {new Date(entry.createdAt).toLocaleString()}
+        {new Date(entry.createdAt).toLocaleString("en-US", { timeZone: "UTC" })}
         {entry.mood ? ` · ${entry.mood}` : ""}
       </p>
 

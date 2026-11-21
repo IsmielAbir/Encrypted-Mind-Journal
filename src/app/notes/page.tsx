@@ -85,7 +85,9 @@ export default function NotesPage() {
           >
             <div>
               <p className="text-sm">{note.content}</p>
-              <p className="mt-1 text-xs text-foreground/50">{new Date(note.createdAt).toLocaleString()}</p>
+              <p className="mt-1 text-xs text-foreground/50">
+              {new Date(note.createdAt).toLocaleString("en-US", { timeZone: "UTC" })}
+            </p>
             </div>
             <button
               onClick={() => handleDelete(note.id)}
