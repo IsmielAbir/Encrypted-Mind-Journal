@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { getPrisma } from "@/lib/db";
 import { createSession } from "@/lib/session";
+import { isRateLimited, clientIp } from "@/lib/rate-limit";
 
 const registerSchema = z.object({
   email: z.string().trim().toLowerCase().email().max(254),
@@ -10,6 +11,13 @@ const registerSchema = z.object({
 });
 
 export async function POST(request: Request) {
+  if (isRateLimited(`register:${clientIp(request)}`, 5, 10 * 60 * 1000)) {
+    return NextResponse.json(
+      { error: "Too many accounts created from this network. Please try again later." },
+      { status: 429 },
+    );
+  }
+
   const body = await request.json().catch(() => null);
   const parsed = registerSchema.safeParse(body);
   if (!parsed.success) {

@@ -22,7 +22,9 @@ export async function createSession(userId: number, email: string) {
   const cookieStore = await cookies();
   cookieStore.set(SESSION_COOKIE, token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    // Cloudflare Workers doesn't set NODE_ENV=production; .dev.vars sets
+    // NEXTJS_ENV=development locally, so this is unset (secure) once deployed.
+    secure: process.env.NEXTJS_ENV !== "development",
     sameSite: "lax",
     path: "/",
     maxAge: SESSION_DURATION_SECONDS,
