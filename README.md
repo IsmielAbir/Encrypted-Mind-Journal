@@ -1,51 +1,18 @@
 # Encrypted Mind Journal
 
-A private journaling app built with Next.js (App Router) and Prisma/SQLite. Users can register, write journal entries (optionally encrypted client-side with a passphrase), keep quick notes, and get short CBT-style reflections on an entry from a free public AI model.
+A full-stack journaling app built with Next.js and Prisma/SQLite. Users can register, write journal entries (optionally encrypted client-side), keep quick notes, and get short reflections on an entry from a AI model.
 
 ## Features
 
 - Email/password auth with signed, HTTP-only session cookies (`src/lib/session.ts`)
 - Journal entries with optional per-entry encryption (passphrase never stored)
 - Quick notes
-- AI-assisted CBT-style advice on a journal entry, via [Pollinations](https://pollinations.ai) (`src/lib/pollinations.ts`)
+- AI-assisted advice on a journal entry.
 - User profile (display name, avatar emoji, bio, preferred support style)
-
-## Getting started
-
-```bash
-npm install
-cp .env.example .env   # fill in SESSION_SECRET (see comment in the file)
-npx prisma migrate deploy
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000).
-
-## Environment variables
-
-See `.env.example` for the full list. In short:
-
-| Variable         | Required | Purpose                                                   |
-| ---------------- | -------- | ---------------------------------------------------------- |
-| `DATABASE_URL`   | yes      | SQLite file used by Prisma                                 |
-| `SESSION_SECRET` | yes      | Signs session JWTs — generate your own, don't reuse an example |
-| `GROQ_API_KEY`   | no       | Only needed to run the local security judge (`judge.py`)   |
-
-Never commit a real `.env` — it's gitignored.
 
 ## Project structure
 
 - `src/app` — routes (App Router): `login`, `register`, `dashboard`, `journal`, `notes`, `profile`, `advice`, and `api/*` route handlers
-- `src/lib` — auth/session, Prisma client, Pollinations client
+- `src/lib` — auth/session, Prisma client, AI
 - `src/components` — shared UI (nav bar, advice box, etc.)
 - `prisma/schema.prisma` — data model (User, Entry, Note)
-
-## Scripts
-
-- `npm run dev` — start the dev server (Turbopack)
-- `npm run build` / `npm run start` — production build/serve
-- `npm run lint` — ESLint
-
-## Security notes
-
-This project has gone through local Semgrep/CodeQL/Gitleaks-style scans during development (see internal `security-reports/`, not published in this repo). It has not had a third-party audit — don't use it for anything beyond personal/learning use without reviewing the auth and encryption code yourself.
