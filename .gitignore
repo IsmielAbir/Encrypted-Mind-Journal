@@ -1,0 +1,75 @@
+# Environment & secrets
+.env
+.env.*
+!.env.example
+*.env
+secrets.json
+credentials.json
+
+# Scan results (JSON outputs from Semgrep, ZAP, Tier-2 judge, etc.)
+*.results.json
+*-results.json
+results/
+reports/
+scan-output/
+tier2-*.json
+tier3-*.json
+semgrep-*.json
+zap-*.json
+nikto-*.json
+
+# Generated code samples under evaluation
+samples/
+generated/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Next.js build output
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+
+# Internal audit / scan reports (not for public repo)
+security-reports/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+pip-wheel-metadata/
+.pytest_cache/
+
+# Databases / local stores
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+logs/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# Cloud / hosting
+.render/
+railway.toml
+fly.toml
+.vercel/
+.netlify/
+
+# Claude / AI assistant local state
+.claude/
+CLAUDE.local.md

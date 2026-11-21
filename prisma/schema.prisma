@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+
+  displayName           String?
+  avatarEmoji           String?
+  bio                   String?
+  preferredSupportStyle String?
+
+  entries Entry[]
+  notes   Note[]
+}
+
+model Entry {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  mood      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // When encrypted = true, `content` holds base64 ciphertext and
+  // salt / iv / authTag are populated. When false, `content` is plaintext
+  // and those three fields are null. The passphrase used to encrypt is
+  // never stored anywhere.
+  encrypted Boolean @default(false)
+  content   String
+  salt      String?
+  iv        String?
+  authTag   String?
+
+  @@index([userId, createdAt])
+}
+
+model Note {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  content   String
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt])
+}
