@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { requireUser } from "@/lib/auth";
-import { prisma } from "@/lib/db";
+import { getPrisma } from "@/lib/db";
 
 export default async function JournalListPage() {
   const user = await requireUser();
   if (!user) return null;
 
+  const prisma = await getPrisma();
   const entries = await prisma.entry.findMany({
     where: { userId: user.id },
     orderBy: { createdAt: "desc" },

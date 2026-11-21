@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
-import { prisma } from "@/lib/db";
+import { getPrisma } from "@/lib/db";
 import { createSession } from "@/lib/session";
 
 const loginSchema = z.object({
@@ -17,6 +17,7 @@ export async function POST(request: Request) {
   }
   const { email, password } = parsed.data;
 
+  const prisma = await getPrisma();
   const user = await prisma.user.findUnique({ where: { email } });
   // Generic error on purpose: don't reveal whether the email is registered.
   const genericError = NextResponse.json({ error: "Incorrect email or password." }, { status: 401 });

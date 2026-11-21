@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { requireUser } from "@/lib/auth";
-import { prisma } from "@/lib/db";
+import { getPrisma } from "@/lib/db";
 import { encryptContent } from "@/lib/crypto";
 
 const createEntrySchema = z
@@ -21,6 +21,7 @@ export async function GET() {
   const user = await requireUser();
   if (!user) return NextResponse.json({ error: "Not signed in." }, { status: 401 });
 
+  const prisma = await getPrisma();
   const entries = await prisma.entry.findMany({
     where: { userId: user.id },
     orderBy: { createdAt: "desc" },
@@ -75,6 +76,7 @@ export async function POST(request: Request) {
       })()
     : { encrypted: false, content, salt: null, iv: null, authTag: null };
 
+  const prisma = await getPrisma();
   const entry = await prisma.entry.create({
     data: {
       userId: user.id,

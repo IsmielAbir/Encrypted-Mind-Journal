@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
-import { prisma } from "@/lib/db";
+import { getPrisma } from "@/lib/db";
 import { createSession } from "@/lib/session";
 
 const registerSchema = z.object({
@@ -20,6 +20,7 @@ export async function POST(request: Request) {
   }
   const { email, password } = parsed.data;
 
+  const prisma = await getPrisma();
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
     return NextResponse.json({ error: "An account with that email already exists." }, { status: 409 });

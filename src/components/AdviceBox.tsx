@@ -17,12 +17,12 @@ export default function AdviceBox({ text }: { text: string }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text }),
       });
-      const data = await res.json();
+      const data = (await res.json()) as { error?: string; advice?: string };
       if (!res.ok) {
         setError(data.error ?? "Something went wrong.");
         return;
       }
-      setAdvice(data.advice);
+      setAdvice(data.advice ?? null);
     } catch {
       setError("Could not reach the AI advice service.");
     } finally {

@@ -71,7 +71,9 @@ entry clearly calls for something else.`
     throw new PollinationsError("The AI advice service returned an error.", response.status);
   }
 
-  const data = await response.json().catch(() => null);
+  const data = (await response.json().catch(() => null)) as {
+    choices?: { message?: { content?: string } }[];
+  } | null;
   const content = data?.choices?.[0]?.message?.content;
   if (typeof content !== "string" || !content.trim()) {
     throw new PollinationsError("The AI advice service returned an empty response.");

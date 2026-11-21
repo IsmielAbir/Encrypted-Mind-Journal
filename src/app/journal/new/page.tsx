@@ -39,7 +39,7 @@ export default function NewEntryPage() {
           passphrase: encrypt ? passphrase : undefined,
         }),
       });
-      const data = await res.json();
+      const data = (await res.json()) as { error?: string; id?: number };
       if (!res.ok) {
         setError(data.error ?? "Something went wrong.");
         return;

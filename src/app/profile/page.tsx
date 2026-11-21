@@ -37,7 +37,7 @@ export default function ProfilePage() {
 
   useEffect(() => {
     fetch("/api/profile")
-      .then((res) => res.json())
+      .then((res) => res.json() as Promise<{ profile: Profile }>)
       .then((data) => {
         const p: Profile = data.profile;
         setProfile(p);
@@ -59,7 +59,7 @@ export default function ProfilePage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ displayName, avatarEmoji, bio, preferredSupportStyle }),
       });
-      const data = await res.json();
+      const data = (await res.json()) as { error?: string };
       if (!res.ok) {
         setError(data.error ?? "Could not save your profile.");
         return;

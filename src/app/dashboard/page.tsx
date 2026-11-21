@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { requireUser } from "@/lib/auth";
-import { prisma } from "@/lib/db";
+import { getPrisma } from "@/lib/db";
 
 export default async function DashboardPage() {
   const user = await requireUser();
   if (!user) return null; // middleware already redirects unauthenticated visitors
 
+  const prisma = await getPrisma();
   const [entryCount, noteCount, recentEntries, recentNotes] = await Promise.all([
     prisma.entry.count({ where: { userId: user.id } }),
     prisma.note.count({ where: { userId: user.id } }),

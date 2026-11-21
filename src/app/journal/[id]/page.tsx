@@ -37,8 +37,11 @@ export default function EntryDetailPage() {
   useEffect(() => {
     fetch(`/api/entries/${id}`)
       .then(async (res) => {
-        if (!res.ok) throw new Error((await res.json()).error ?? "Could not load entry.");
-        return res.json();
+        if (!res.ok) {
+          const body = (await res.json()) as { error?: string };
+          throw new Error(body.error ?? "Could not load entry.");
+        }
+        return res.json() as Promise<EntryMeta>;
       })
       .then((data: EntryMeta) => {
         setEntry(data);
@@ -62,12 +65,12 @@ export default function EntryDetailPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ passphrase }),
       });
-      const data = await res.json();
+      const data = (await res.json()) as { error?: string; content?: string };
       if (!res.ok) {
         setDecryptError(data.error ?? "Could not decrypt.");
         return;
       }
-      setContent(data.content);
+      setContent(data.content ?? "");
       setUnlocked(true);
     } finally {
       setDecrypting(false);
@@ -91,7 +94,7 @@ export default function EntryDetailPage() {
           passphrase: entry?.encrypted ? passphrase : undefined,
         }),
       });
-      const data = await res.json();
+      const data = (await res.json()) as { error?: string };
       if (!res.ok) {
         setSaveError(data.error ?? "Could not save changes.");
         return;

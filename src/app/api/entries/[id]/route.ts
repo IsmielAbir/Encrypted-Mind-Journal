@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { requireUser } from "@/lib/auth";
-import { prisma } from "@/lib/db";
+import { getPrisma } from "@/lib/db";
 import { encryptContent } from "@/lib/crypto";
+import type { PrismaClient } from "@prisma/client";
 
-async function loadOwnedEntry(id: number, userId: number) {
+async function loadOwnedEntry(prisma: PrismaClient, id: number, userId: number) {
   const entry = await prisma.entry.findUnique({ where: { id } });
   if (!entry || entry.userId !== userId) return null;
   return entry;
@@ -14,8 +15,9 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
   const user = await requireUser();
   if (!user) return NextResponse.json({ error: "Not signed in." }, { status: 401 });
 
+  const prisma = await getPrisma();
   const id = Number((await params).id);
-  const entry = await loadOwnedEntry(id, user.id);
+  const entry = await loadOwnedEntry(prisma, id, user.id);
   if (!entry) return NextResponse.json({ error: "Entry not found." }, { status: 404 });
 
   return NextResponse.json({
@@ -48,8 +50,9 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
   const user = await requireUser();
   if (!user) return NextResponse.json({ error: "Not signed in." }, { status: 401 });
 
+  const prisma = await getPrisma();
   const id = Number((await params).id);
-  const entry = await loadOwnedEntry(id, user.id);
+  const entry = await loadOwnedEntry(prisma, id, user.id);
   if (!entry) return NextResponse.json({ error: "Entry not found." }, { status: 404 });
 
   const body = await request.json().catch(() => null);
@@ -94,8 +97,9 @@ export async function DELETE(_request: Request, { params }: { params: Promise<{ 
   const user = await requireUser();
   if (!user) return NextResponse.json({ error: "Not signed in." }, { status: 401 });
 
+  const prisma = await getPrisma();
   const id = Number((await params).id);
-  const entry = await loadOwnedEntry(id, user.id);
+  const entry = await loadOwnedEntry(prisma, id, user.id);
   if (!entry) return NextResponse.json({ error: "Entry not found." }, { status: 404 });
 
   await prisma.entry.delete({ where: { id } });

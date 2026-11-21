@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { requireUser } from "@/lib/auth";
-import { prisma } from "@/lib/db";
+import { getPrisma } from "@/lib/db";
 
 export const SUPPORT_STYLES = [
   "Breathing & grounding",
@@ -15,6 +15,7 @@ export async function GET() {
   const user = await requireUser();
   if (!user) return NextResponse.json({ error: "Not signed in." }, { status: 401 });
 
+  const prisma = await getPrisma();
   const [entryCount, encryptedCount, noteCount] = await Promise.all([
     prisma.entry.count({ where: { userId: user.id } }),
     prisma.entry.count({ where: { userId: user.id, encrypted: true } }),
@@ -57,6 +58,7 @@ export async function PUT(request: Request) {
   }
   const { displayName, avatarEmoji, bio, preferredSupportStyle } = parsed.data;
 
+  const prisma = await getPrisma();
   await prisma.user.update({
     where: { id: user.id },
     data: {

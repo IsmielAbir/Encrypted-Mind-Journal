@@ -12,7 +12,7 @@ export default function NotesPage() {
 
   function loadNotes() {
     fetch("/api/notes")
-      .then((res) => res.json())
+      .then((res) => res.json() as Promise<{ notes: Note[] }>)
       .then((data) => setNotes(data.notes));
   }
 
@@ -28,7 +28,7 @@ export default function NotesPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content }),
       });
-      const data = await res.json();
+      const data = (await res.json()) as { error?: string };
       if (!res.ok) {
         setError(data.error ?? "Something went wrong.");
         return;
